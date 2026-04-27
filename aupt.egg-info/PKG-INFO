@@ -1,0 +1,133 @@
+Metadata-Version: 2.4
+Name: aupt
+Version: 0.1.0
+Summary: Advanced Unified Package Tool
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+
+# AUPT
+
+统一 Linux 包管理调度工具。
+
+## 安装
+
+### 方式一：使用安装脚本
+
+默认执行用户级安装，使用系统 `python3`：
+
+```bash
+cd /home/lcf/aupt
+chmod +x scripts/install.sh scripts/uninstall.sh
+./scripts/install.sh
+```
+
+安装完成后，命令会通过 `console_script` 暴露为全局可执行命令：
+
+```bash
+aupt doctor
+aupt install vim --dry-run
+```
+
+### 方式二：直接使用 `pip`
+
+仍然使用系统 `python3`：
+
+```bash
+cd /home/lcf/aupt
+python3 -m pip install --user .
+```
+
+安装完成后可直接执行：
+
+```bash
+aupt doctor
+```
+
+### 系统级安装
+
+如果你希望所有用户都可直接执行 `aupt`，可以使用系统级安装：
+
+```bash
+cd /home/lcf/aupt
+sudo INSTALL_SCOPE=system ./scripts/install.sh
+```
+
+或：
+
+```bash
+cd /home/lcf/aupt
+sudo python3 -m pip install .
+```
+
+## `console_script` 说明
+
+项目在 [pyproject.toml](file:///home/lcf/aupt/pyproject.toml) 中声明了：
+
+```toml
+[project.scripts]
+aupt = "aupt.cli.commands:main"
+```
+
+这表示安装完成后，Python 打包系统会自动生成一个名为 `aupt` 的启动命令，实际调用入口函数 `aupt.cli.commands:main`。
+
+因此你不需要手动创建软链接，也不需要自己写启动包装器，只要项目安装成功，就可以直接在终端里执行：
+
+```bash
+aupt doctor
+aupt config
+aupt mirror list
+```
+
+## APT 后端说明
+
+在 Debian / Ubuntu 系系统上，AUPT 的 `apt` 后端默认采用更稳定的脚本接口：
+
+```bash
+apt-get
+apt-cache
+```
+
+其中：
+
+```text
+安装/卸载/更新/升级/清理 -> apt-get
+搜索/信息查询 -> apt-cache
+```
+
+这样可以避免直接使用 `apt` 命令时常见的脚本接口警告，更适合自动化调用与跨环境运行。
+
+## PATH 说明
+
+用户级安装通常会把命令安装到：
+
+```bash
+~/.local/bin
+```
+
+如果安装完成后提示找不到 `aupt`，请将下面内容加入 `~/.bashrc` 或 `~/.zshrc`：
+
+```bash
+export PATH="$HOME/.local/bin:$PATH"
+```
+
+然后重新打开终端，或执行：
+
+```bash
+source ~/.bashrc
+```
+
+## 卸载
+
+用户级卸载：
+
+```bash
+cd /home/lcf/aupt
+./scripts/uninstall.sh
+```
+
+系统级卸载：
+
+```bash
+cd /home/lcf/aupt
+sudo INSTALL_SCOPE=system ./scripts/uninstall.sh
+```

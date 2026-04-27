@@ -1,0 +1,7 @@
+[2026-04-27 00:00:00] 初始化 `aupt/` 工程结构，创建核心目录、CLI、dispatcher、distro detector、package resolver、mirror manager、基础 backend、数据库样例、测试与项目入口，目标为实现统一 Linux 包管理基础能力。
+[2026-04-27 00:20:00] 修复 `aupt/cli/commands.py`、`aupt/core/dispatcher.py`、`aupt/core/mirror_manager.py` 中批量生成导致的换行字符串断裂问题，补充 `Path` 导入，并将镜像测速超时配置贯通到自动选源流程。
+[2026-04-27 00:28:00] 修复 `aupt/core/config_manager.py` 中配置文件写入换行字符串断裂问题，避免 `doctor` 与 `config` 命令在导入阶段触发语法错误。
+[2026-04-27 00:42:00] 补充 `scripts/install.sh`、`scripts/uninstall.sh`、`README.md` 与 `pyproject.toml` 打包配置，支持基于系统 `python3` 的用户级/系统级安装，并通过 `console_script` 生成全局命令 `aupt`。
+[2026-04-27 00:55:00] 修复安装后 `aupt` 无法读取数据库的问题：将 `build_dispatcher()` 的数据库定位改为优先使用已安装包目录，新增 `aupt/database/__init__.py`，并在 `pyproject.toml` 中声明打包 `database/*.json` 资源文件。
+[2026-04-27 01:02:00] 修复 `aupt/utils/logger.py` 在只读文件系统上初始化日志文件失败的问题，改为文件日志不可写时自动回退为仅控制台输出，保障全局命令可执行。
+[2026-04-27 01:10:00] 优化 `aupt/backends/apt_backend.py`：将脚本型操作切换为 `apt-get`，查询类命令切换为 `apt-cache`，减少 `apt` CLI 稳定性警告；同步更新 `README.md` 中的 APT 后端说明。

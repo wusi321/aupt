@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aupt"
+version = "0.1.0"
+description = "Advanced Unified Package Tool"
+requires-python = ">=3.10"
+readme = "README.md"
+
+[project.scripts]
+aupt = "aupt.cli.commands:main"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["aupt*"]
+
+[tool.setuptools.package-data]
+"aupt.database" = ["*.json"]

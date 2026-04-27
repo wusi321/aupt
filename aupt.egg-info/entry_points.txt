@@ -1,0 +1,2 @@
+[console_scripts]
+aupt = aupt.cli.commands:main

@@ -1,0 +1,66 @@
+{
+  "opencv": {
+    "apt": "python3-opencv",
+    "pacman": "opencv",
+    "dnf": "python3-opencv",
+    "zypper": "opencv",
+    "flatpak": "org.opencv.OpenCV",
+    "snap": "opencv"
+  },
+  "python": {
+    "apt": "python3",
+    "pacman": "python",
+    "dnf": "python3",
+    "zypper": "python3",
+    "flatpak": "org.python.Python",
+    "snap": "python38"
+  },
+  "nodejs": {
+    "apt": "nodejs",
+    "pacman": "nodejs",
+    "dnf": "nodejs",
+    "zypper": "nodejs",
+    "flatpak": "org.nodejs.Node",
+    "snap": "node"
+  },
+  "code": {
+    "apt": "code",
+    "pacman": "code",
+    "dnf": "code",
+    "zypper": "code",
+    "flatpak": "com.visualstudio.code",
+    "snap": "code"
+  },
+  "vim": {
+    "apt": "vim",
+    "pacman": "vim",
+    "dnf": "vim-enhanced",
+    "zypper": "vim",
+    "flatpak": "org.vim.Vim",
+    "snap": "vim-editor"
+  },
+  "gcc": {
+    "apt": "gcc",
+    "pacman": "gcc",
+    "dnf": "gcc",
+    "zypper": "gcc",
+    "flatpak": "org.gnu.gcc",
+    "snap": "gcc"
+  },
+  "git": {
+    "apt": "git",
+    "pacman": "git",
+    "dnf": "git",
+    "zypper": "git",
+    "flatpak": "org.git.Git",
+    "snap": "git"
+  },
+  "redis": {
+    "apt": "redis-server",
+    "pacman": "redis",
+    "dnf": "redis",
+    "zypper": "redis",
+    "flatpak": "io.redis.Redis",
+    "snap": "redis"
+  }
+}

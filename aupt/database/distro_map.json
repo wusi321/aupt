@@ -1,0 +1,17 @@
+{
+  "ubuntu": "apt",
+  "debian": "apt",
+  "linuxmint": "apt",
+  "pop": "apt",
+  "arch": "pacman",
+  "manjaro": "pacman",
+  "endeavouros": "pacman",
+  "fedora": "dnf",
+  "rhel": "dnf",
+  "centos": "dnf",
+  "rocky": "dnf",
+  "almalinux": "dnf",
+  "opensuse": "zypper",
+  "opensuse-tumbleweed": "zypper",
+  "sles": "zypper"
+}

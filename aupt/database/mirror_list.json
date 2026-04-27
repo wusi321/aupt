@@ -1,0 +1,23 @@
+{
+  "apt": [
+    {"name": "official", "url": "http://archive.ubuntu.com/ubuntu"},
+    {"name": "tuna", "url": "https://mirrors.tuna.tsinghua.edu.cn/ubuntu"},
+    {"name": "ustc", "url": "https://mirrors.ustc.edu.cn/ubuntu"},
+    {"name": "aliyun", "url": "https://mirrors.aliyun.com/ubuntu"}
+  ],
+  "pacman": [
+    {"name": "official", "url": "https://geo.mirror.pkgbuild.com"},
+    {"name": "tuna", "url": "https://mirrors.tuna.tsinghua.edu.cn/archlinux"},
+    {"name": "ustc", "url": "https://mirrors.ustc.edu.cn/archlinux"}
+  ],
+  "dnf": [
+    {"name": "official", "url": "https://download.fedoraproject.org/pub/fedora/linux"},
+    {"name": "tuna", "url": "https://mirrors.tuna.tsinghua.edu.cn/fedora"},
+    {"name": "ustc", "url": "https://mirrors.ustc.edu.cn/fedora"}
+  ],
+  "zypper": [
+    {"name": "official", "url": "https://download.opensuse.org"},
+    {"name": "tuna", "url": "https://mirrors.tuna.tsinghua.edu.cn/opensuse"},
+    {"name": "ustc", "url": "https://mirrors.ustc.edu.cn/opensuse"}
+  ]
+}
