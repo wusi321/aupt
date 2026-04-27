@@ -241,6 +241,12 @@ cd ~/aupt
 python3 -m pip install --user .
 ```
 
+### 如果安装失败执行
+```bash
+cd ~/aupt
+pip install . --break-system-packages
+```
+
 安装完成后可直接执行：
 
 ```bash
