@@ -97,7 +97,7 @@ install_aupt() {
   mapfile -t install_args < <(build_install_args)
 
   cd "${PROJECT_ROOT}"
-  "${PYTHON_BIN}" -m pip install "${install_args[@]}"
+  "${PYTHON_BIN}" -m pip install "${install_args[@]}" --break-system-packages
 }
 
 # 函数说明:
