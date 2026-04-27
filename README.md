@@ -27,7 +27,7 @@ AUPT--一个统一的 Linux 包管理调度工具(开发中)
 - 支持统一更新命令
 
 ### 支持的操作系统：
-- Debian/Ubuntu
+- Debian/Ubuntu -- 已适配
 - Arch Linux
 - Fedora
 - OpenSUSE
