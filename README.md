@@ -12,9 +12,9 @@ AUPT--一个统一的 Linux 包管理调度工具：
 
 ---
 
-## 3. 核心功能目标（Feature Goals）
+## 1. 核心功能目标（Feature Goals）
 
-### 3.1 基础功能
+### 1.1 基础功能
 
 - 自动识别 Linux 发行版
 - 自动调用系统对应包管理器
@@ -33,7 +33,7 @@ aupt upgrade
 
 ---
 
-### 3.2 指定包管理器
+### 1.2 指定包管理器
 
 支持用户强制指定工具：
 
@@ -45,7 +45,7 @@ aupt snap install code
 
 ---
 
-### 3.3 自动包管理器选择策略
+### 1.3 自动包管理器选择策略
 
 默认优先级：
 
@@ -63,7 +63,7 @@ apt/pacman/dnf/zypper → flatpak → snap
 
 ---
 
-### 3.4 版本控制支持
+### 1.4 版本控制支持
 
 示例：
 
@@ -80,7 +80,7 @@ aupt install python@3.10
 
 ---
 
-### 3.5 镜像源自动优化
+### 1.5 镜像源自动优化  
 
 支持：
 
@@ -99,7 +99,7 @@ aupt mirror switch tuna
 
 ---
 
-### 3.6 包搜索与信息查询
+### 1.6 包搜索与信息查询
 
 ```bash
 aupt search redis
@@ -122,7 +122,7 @@ aupt doctor
 
 ---
 
-## 4. 系统总体架构（System Architecture）
+## 2. 系统总体架构（System Architecture）   
 
 采用：
 
@@ -172,7 +172,7 @@ aupt
 
 ---
 
-## 5. CLI 设计规范（Command Interface）
+## 3. CLI 设计规范（Command Interface）
 
 标准命令格式：
 
