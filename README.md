@@ -1,6 +1,6 @@
 # AUPT
 
-AUPT--一个统一的 Linux 包管理调度工具：
+AUPT--一个统一的 Linux 包管理调度工具(开发中)
 
 # **AUPT (Advanced Unified Package Tool)**
 
@@ -26,6 +26,12 @@ AUPT--一个统一的 Linux 包管理调度工具：
 - 支持统一卸载命令
 - 支持统一更新命令
 
+### 支持的操作系统：
+- Debian/Ubuntu
+- Arch Linux
+- Fedora
+- OpenSUSE
+- SUSE Linux Enterprise Server
 示例：
 
 ```bash
