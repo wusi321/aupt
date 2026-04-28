@@ -3,6 +3,7 @@
 AUPT--一个统一的 Linux 包管理调度工具(开发中)
 
 # **AUPT (Advanced Unified Package Tool)**
+---
 ## 目录
 
 - [1. 核心功能目标](#1-核心功能目标feature-goals)
@@ -141,7 +142,7 @@ aupt info nodejs
 
 ---
 
-### 3.7 系统诊断功能
+### 1.7 系统诊断功能
 
 ```bash
 aupt doctor
@@ -242,7 +243,9 @@ aupt benchmark
 默认执行用户级安装，使用系统 `python3`：
 
 ```bash
+# 获取仓库
 git clone git@github.com:wusi321/aupt.git
+# 将获取的文件夹aupt-main重命名为aupt
 cd ~/aupt
 chmod +x scripts/install.sh scripts/uninstall.sh
 ./scripts/install.sh
@@ -260,11 +263,14 @@ aupt install vim --dry-run
 仍然使用系统 `python3`：
 
 ```bash
+# 获取仓库
+git clone git@github.com:wusi321/aupt.git
+# 将获取的文件夹aupt-main重命名为aupt
 cd ~/aupt
 python3 -m pip install --user .
 ```
 
-### 如果安装失败执行
+### 如果安装失败请尝试
 ```bash
 cd ~/aupt
 pip install . --break-system-packages
