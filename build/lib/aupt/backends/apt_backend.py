@@ -56,7 +56,7 @@ class AptBackend(BaseBackend):
             - Unified interface: `aupt/backends/base_backend.py`
         """
 
-        return BackendCommand(["apt-get", "update"], requires_root=True)
+        return BackendCommand(["apt-get", "update", "-y"], requires_root=True)
 
     def build_upgrade_command(self) -> BackendCommand:
         """Build an APT upgrade command.

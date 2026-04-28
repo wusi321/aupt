@@ -342,3 +342,36 @@ cd ~/aupt
 sudo INSTALL_SCOPE=system ./scripts/uninstall.sh
 ```
 
+## 受限环境使用
+
+如果你在容器或启用了安全限制的环境中遇到权限问题（如 "no new privileges" 错误），请参考 [受限环境使用指南](RESTRICTED_ENV.md)。
+
+### 快速解决方案
+
+镜像切换等需要修改系统文件的操作，请使用 root 用户运行：
+
+```bash
+# 切换到 root 用户
+sudo -i
+
+# 执行镜像切换
+aupt mirror auto
+
+# 退出 root
+exit
+```
+
+**注意**: 不要使用 `sudo aupt mirror auto`，在受限环境中可能会失败。
+
+### 不需要 root 权限的功能
+
+以下功能可以直接使用，无需 root 权限：
+
+```bash
+aupt doctor          # 系统诊断
+aupt mirror list     # 查看镜像列表
+aupt search vim      # 搜索包
+aupt info vim        # 查看包信息
+aupt config show     # 查看配置
+```
+

@@ -167,9 +167,9 @@ class MirrorManager:
             if updated != original:
                 touched.append(str(path))
                 if not dry_run:
-                    backup_path = path.with_suffix(path.suffix + ".aupt.bak")
-                    backup_path.write_text(original, encoding="utf-8")
-                    path.write_text(updated, encoding="utf-8")
+                    result = self._write_mirror_config(path, original, updated)
+                    if result.returncode != 0:
+                        return result
         if not touched:
             return CommandResult(["mirror", "switch"], 0, f"未找到可替换的镜像源文件，目标镜像: {mirror_name}", "")
         return CommandResult(["mirror", "switch"], 0, "\n".join(touched), "" if dry_run else f"已切换到镜像: {mirror_name}")
@@ -194,3 +194,48 @@ class MirrorManager:
             "zypper": glob.glob("/etc/zypp/repos.d/*.repo"),
         }
         return mapping.get(manager, [])
+
+    def _write_mirror_config(self, path: Path, original: str, updated: str) -> CommandResult:
+        """Write mirror configuration with appropriate permissions.
+
+        Args:
+            path: Target configuration file path.
+            original: Original file content for backup.
+            updated: Updated file content.
+
+        Returns:
+            CommandResult: Write operation result.
+
+        References:
+            - Called by `switch_mirror()` in current file.
+        """
+
+        import os
+        
+        backup_path = path.with_suffix(path.suffix + ".aupt.bak")
+        
+        # Check if we have write permission
+        try:
+            # Try direct write first (if running as root or file is writable)
+            backup_path.write_text(original, encoding='utf-8')
+            path.write_text(updated, encoding='utf-8')
+            return CommandResult(["mirror", "switch"], 0, f"已更新: {path}", "")
+        except PermissionError:
+            # Need elevated privileges
+            if os.geteuid() != 0:
+                # Not running as root, provide helpful error message
+                error_msg = (
+                    f"权限不足，无法修改系统文件: {path}\n\n"
+                    f"请使用以下方式之一:\n"
+                    f"1. 使用 root 用户运行:\n"
+                    f"   sudo -i\n"
+                    f"   aupt mirror auto\n\n"
+                    f"2. 或者先查看要修改的内容 (dry-run):\n"
+                    f"   aupt mirror auto --dry-run\n"
+                    f"   然后手动编辑配置文件\n\n"
+                    f"3. 如果在容器环境中，可能需要调整容器配置"
+                )
+                return CommandResult(["mirror", "switch"], 1, "", error_msg)
+            else:
+                # Running as root but still failed
+                return CommandResult(["mirror", "switch"], 1, "", f"写入文件失败: {path}")

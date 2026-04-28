@@ -34,12 +34,10 @@ ensure_python() {
 #   根据安装范围生成 pip 卸载参数
 # 出处:
 #   - 卸载流程入口: `scripts/uninstall.sh`
+# 注意:
+#   pip uninstall 不支持 --user 选项，用户级和系统级卸载命令相同
 build_uninstall_args() {
-  if [[ "${INSTALL_SCOPE}" == "system" ]]; then
-    printf '%s\n' "aupt"
-  else
-    printf '%s\n' "--user" "aupt"
-  fi
+  printf '%s\n' "aupt"
 }
 
 # 函数说明:
