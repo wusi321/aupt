@@ -3,6 +3,16 @@
 AUPT--一个统一的 Linux 包管理调度工具(开发中)
 
 # **AUPT (Advanced Unified Package Tool)**
+
+## 📚 文档导航
+
+- **[快速开始](markdown/QUICK_START.md)** - 5 分钟快速上手
+- **[命令速查](markdown/QUICK_REFERENCE.md)** - 常用命令参考
+- **[兼容性说明](markdown/COMPATIBILITY.md)** - Python 版本兼容性
+- **[受限环境指南](markdown/RESTRICTED_ENV.md)** - 容器/沙箱环境使用
+- **[更新日志](markdown/CHANGELOG.md)** - 版本历史
+- **[所有文档](markdown/)** - 查看所有文档
+
 ---
 ## 目录
 
@@ -204,26 +214,23 @@ aupt
 │   └── distro_map.json
 │
 ├── plugins/
+├── README.md                          # 主文档
+├── markdown/                          # 📚 文档目录
+│   ├── README.md                      # 文档索引
+│   ├── QUICK_START.md                 # 快速开始
+│   ├── QUICK_REFERENCE.md             # 命令速查
+│   ├── COMPATIBILITY.md               # 兼容性说明
+│   ├── COMPATIBILITY_SUMMARY.md       # 兼容性总结
+│   ├── PYTHON_COMPAT_REPORT.md        # Python 兼容性报告
+│   ├── RESTRICTED_ENV.md              # 受限环境指南
+│   ├── BUGFIX.md                      # Bug 修复说明
+│   ├── SOLUTION_SUMMARY.md            # 解决方案总结
+│   ├── CHANGELOG.md                   # 更新日志
+│   └── aupt.md 
 │
 └── main.py
 
-## 说明文档
-aupt/
-├── README.md                      # 主文档（已更新）
-├── QUICK_START.md                 # 快速开始（新增）
-├── COMPATIBILITY.md               # 兼容性详细说明（新增）
-├── COMPATIBILITY_SUMMARY.md       # 兼容性总结（新增）
-├── PYTHON_COMPAT_REPORT.md        # 改进报告（新增）
-├── CHANGELOG.md                   # 更新日志（已更新）
-├── QUICK_REFERENCE.md             # 快速参考
-├── RESTRICTED_ENV.md              # 受限环境指南
-├── BUGFIX.md                      # Bug 修复说明
-└── scripts/
-    ├── install.sh                 # 标准安装（已增强）
-    ├── install_compat.sh          # 兼容性安装（新增）
-    ├── test_compatibility.sh      # 兼容性测试（新增）
-    ├── uninstall.sh               # 卸载脚本
-    └── manual_mirror_switch.sh    # 手动镜像切换
+
 
 ```
 
@@ -265,7 +272,7 @@ aupt benchmark
 - **系统**: Linux (Ubuntu 18.04+, Debian 9+, CentOS 7+, Fedora, Arch Linux 等)
 - **权限**: 部分功能需要 root 权限（如安装包、切换镜像）
 
-详细的版本兼容性说明请查看 [COMPATIBILITY.md](COMPATIBILITY.md)。
+详细的版本兼容性说明请查看 [COMPATIBILITY.md](markdown/COMPATIBILITY.md)。
 
 ## 安装
 
@@ -350,7 +357,7 @@ sudo apt install python3.6 python3.6-pip
 PYTHON_BIN=python3.6 ./scripts/install.sh
 ```
 
-更多低版本系统安装指南请查看 [COMPATIBILITY.md](COMPATIBILITY.md)。
+更多低版本系统安装指南请查看 [COMPATIBILITY.md](markdown/COMPATIBILITY.md)。
 
 ### 如果安装失败请尝试
 ```bash
@@ -455,7 +462,7 @@ sudo INSTALL_SCOPE=system ./scripts/uninstall.sh
 
 ## 受限环境使用
 
-如果你在容器或启用了安全限制的环境中遇到权限问题（如 "no new privileges" 错误），请参考 [受限环境使用指南](RESTRICTED_ENV.md)。
+如果你在容器或启用了安全限制的环境中遇到权限问题（如 "no new privileges" 错误），请参考 [受限环境使用指南](markdown/RESTRICTED_ENV.md)。
 
 ### 快速解决方案
 

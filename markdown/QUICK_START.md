@@ -284,7 +284,7 @@ python3 -m pip install --user .
 
 ### 文档
 
-- [README.md](README.md) - 完整文档
+- [README.md](../README.md) - 完整文档
 - [COMPATIBILITY.md](COMPATIBILITY.md) - 版本兼容性
 - [RESTRICTED_ENV.md](RESTRICTED_ENV.md) - 受限环境指南
 - [QUICK_REFERENCE.md](QUICK_REFERENCE.md) - 命令速查
@@ -366,7 +366,7 @@ aupt mirror auto --dry-run
 
 ## 📞 获取帮助
 
-- 查看文档：[README.md](README.md)
+- 查看文档：[README.md](../README.md)
 - 运行诊断：`aupt doctor`
 - 查看日志：`cat ~/.aupt/aupt.log`
 - 提交 Issue：[GitHub Issues](https://github.com/wusi321/aupt/issues)

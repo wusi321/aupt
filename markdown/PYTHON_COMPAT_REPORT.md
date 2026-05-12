@@ -184,13 +184,16 @@ print_success() {
 ```
 aupt/
 ├── README.md                      # 主文档（已更新）
-├── COMPATIBILITY.md               # 兼容性详细说明（新增）
-├── COMPATIBILITY_SUMMARY.md       # 兼容性总结（新增）
-├── PYTHON_COMPAT_REPORT.md        # 本报告（新增）
-├── CHANGELOG.md                   # 更新日志（已更新）
-├── BUGFIX.md                      # Bug 修复说明
-├── RESTRICTED_ENV.md              # 受限环境指南
-├── QUICK_REFERENCE.md             # 快速参考
+├── markdown/                      # 文档目录
+│   ├── COMPATIBILITY.md           # 兼容性详细说明（新增）
+│   ├── COMPATIBILITY_SUMMARY.md   # 兼容性总结（新增）
+│   ├── PYTHON_COMPAT_REPORT.md    # 本报告（新增）
+│   ├── CHANGELOG.md               # 更新日志（已更新）
+│   ├── BUGFIX.md                  # Bug 修复说明
+│   ├── RESTRICTED_ENV.md          # 受限环境指南
+│   ├── QUICK_REFERENCE.md         # 快速参考
+│   ├── QUICK_START.md             # 快速开始
+│   └── SOLUTION_SUMMARY.md        # 解决方案总结
 └── scripts/
     ├── install.sh                 # 标准安装（已增强）
     ├── install_compat.sh          # 兼容性安装（新增）

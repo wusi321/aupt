@@ -351,6 +351,6 @@ python3.10 -m pytest
 
 ## 相关文档
 
-- [README.md](README.md) - 主文档
+- [README.md](../README.md) - 主文档
 - [RESTRICTED_ENV.md](RESTRICTED_ENV.md) - 受限环境使用指南
 - [QUICK_REFERENCE.md](QUICK_REFERENCE.md) - 快速参考

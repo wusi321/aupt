@@ -209,7 +209,7 @@ cat ~/.aupt/aupt.log
 
 ## 相关文档
 
-- [README.md](README.md) - 完整文档
+- [README.md](../README.md) - 完整文档
 - [RESTRICTED_ENV.md](RESTRICTED_ENV.md) - 受限环境使用指南
 - [BUGFIX.md](BUGFIX.md) - Bug 修复说明
 - [SOLUTION_SUMMARY.md](SOLUTION_SUMMARY.md) - 问题解决方案总结
