@@ -8,7 +8,7 @@ from pathlib import Path
 import shutil
 
 
-@dataclass(slots=True)
+@dataclass
 class DistroInfo:
     """Describe the current Linux distribution.
 

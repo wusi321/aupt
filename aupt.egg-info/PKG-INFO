@@ -2,7 +2,7 @@ Metadata-Version: 2.4
 Name: aupt
 Version: 0.1.0
 Summary: Advanced Unified Package Tool
-Requires-Python: >=3.10
+Requires-Python: >=3.6
 Description-Content-Type: text/markdown
 
 # AUPT
@@ -10,13 +10,41 @@ Description-Content-Type: text/markdown
 AUPT--一个统一的 Linux 包管理调度工具(开发中)
 
 # **AUPT (Advanced Unified Package Tool)**
+---
+## 目录
+
+- [1. 核心功能目标](#1-核心功能目标feature-goals)
+  - [1.1 基础功能](#11-基础功能)
+  - [1.2 指定包管理器](#12-指定包管理器)
+  - [1.3 自动包管理器选择策略](#13-自动包管理器选择策略)
+  - [1.4 版本控制支持](#14-版本控制支持)
+  - [1.5 镜像源自动优化](#15-镜像源自动优化)
+  - [1.6 包搜索与信息查询](#16-包搜索与信息查询)
+  - [1.7 系统诊断功能](#37-系统诊断功能)
+- [2. 系统总体架构](#2-系统总体架构system-architecture)
+- [3. CLI 设计规范](#3-cli-设计规范command-interface)
+- [安装](#安装)
+  - [方式一：使用安装脚本](#方式一使用安装脚本)
+  - [方式二：直接使用 pip](#方式二直接使用-pip)
+  - [系统级安装](#系统级安装)
+- [console_script 说明](#consolescript-说明)
+- [APT 后端说明](#apt-后端说明)
+- [PATH 说明](#path-说明)
+- [卸载](#卸载)
+- [受限环境使用](#受限环境使用)
+
+---
 
 核心目标：
 
 ```text
 统一命令入口 + 自动识别发行版 + 自动选择包管理器
 ```
-
+联系开发者：
+[邮箱](19589917063@163.com)
+[QQ](3299459360)
+[X](SCuNF@lcfv171289)
+[WhatApp](+8619589917063)
 ---
 
 ## 1. 核心功能目标（Feature Goals）
@@ -125,7 +153,7 @@ aupt info nodejs
 
 ---
 
-### 3.7 系统诊断功能
+### 1.7 系统诊断功能
 
 ```bash
 aupt doctor
@@ -226,7 +254,9 @@ aupt benchmark
 默认执行用户级安装，使用系统 `python3`：
 
 ```bash
+# 获取仓库
 git clone git@github.com:wusi321/aupt.git
+# 将获取的文件夹aupt-main重命名为aupt
 cd ~/aupt
 chmod +x scripts/install.sh scripts/uninstall.sh
 ./scripts/install.sh
@@ -244,11 +274,14 @@ aupt install vim --dry-run
 仍然使用系统 `python3`：
 
 ```bash
+# 获取仓库
+git clone git@github.com:wusi321/aupt.git
+# 将获取的文件夹aupt-main重命名为aupt
 cd ~/aupt
 python3 -m pip install --user .
 ```
 
-### 如果安装失败执行
+### 如果安装失败请尝试
 ```bash
 cd ~/aupt
 pip install . --break-system-packages
@@ -347,5 +380,38 @@ cd ~/aupt
 ```bash
 cd ~/aupt
 sudo INSTALL_SCOPE=system ./scripts/uninstall.sh
+```
+
+## 受限环境使用
+
+如果你在容器或启用了安全限制的环境中遇到权限问题（如 "no new privileges" 错误），请参考 [受限环境使用指南](RESTRICTED_ENV.md)。
+
+### 快速解决方案
+
+镜像切换等需要修改系统文件的操作，请使用 root 用户运行：
+
+```bash
+# 切换到 root 用户
+sudo -i
+
+# 执行镜像切换
+aupt mirror auto
+
+# 退出 root
+exit
+```
+
+**注意**: 不要使用 `sudo aupt mirror auto`，在受限环境中可能会失败。
+
+### 不需要 root 权限的功能
+
+以下功能可以直接使用，无需 root 权限：
+
+```bash
+aupt doctor          # 系统诊断
+aupt mirror list     # 查看镜像列表
+aupt search vim      # 搜索包
+aupt info vim        # 查看包信息
+aupt config show     # 查看配置
 ```
 

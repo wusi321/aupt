@@ -7,7 +7,7 @@ INSTALL_SCOPE="${INSTALL_SCOPE:-user}"
 
 # 函数说明:
 # 输入参数:
-#   无，使用全局变量 `PROJECT_ROOT`、`PYTHON_BIN`、`INSTALL_SCOPE`
+#   无，使用全局变量 `PYTHON_BIN`
 # 输出参数:
 #   0 表示环境检查通过，非 0 表示失败
 # 作用:
@@ -17,6 +17,28 @@ INSTALL_SCOPE="${INSTALL_SCOPE:-user}"
 ensure_python() {
   if ! command -v "${PYTHON_BIN}" >/dev/null 2>&1; then
     echo "错误: 未找到 ${PYTHON_BIN}，请先安装系统 python3。" >&2
+    exit 1
+  fi
+
+  # 检查 Python 版本
+  local python_version
+  python_version=$("${PYTHON_BIN}" -c "import sys; print('{}.{}'.format(sys.version_info.major, sys.version_info.minor))" 2>/dev/null || echo "0.0")
+  
+  if [[ "$python_version" == "0.0" ]]; then
+    echo "错误: 无法获取 Python 版本信息。" >&2
+    exit 1
+  fi
+  
+  echo "检测到 Python 版本: $python_version"
+  
+  # 检查是否满足最低版本要求 (3.6+)
+  local major minor
+  major=$(echo "$python_version" | cut -d. -f1)
+  minor=$(echo "$python_version" | cut -d. -f2)
+  
+  if [[ "$major" -lt 3 ]] || { [[ "$major" -eq 3 ]] && [[ "$minor" -lt 6 ]]; }; then
+    echo "错误: AUPT 需要 Python 3.6 或更高版本，当前版本: $python_version" >&2
+    echo "建议使用兼容性安装脚本: ./scripts/install_compat.sh" >&2
     exit 1
   fi
 
@@ -54,7 +76,7 @@ build_install_args() {
 #   - 安装流程入口: `scripts/install.sh`
 check_user_bin_in_path() {
   local user_base user_bin
-  user_base="$("${PYTHON_BIN}" -m site --user-base)"
+  user_base="$("${PYTHON_BIN}" -m site --user-base 2>/dev/null || echo "$HOME/.local")"
   user_bin="${user_base}/bin"
   [[ ":${PATH}:" == *":${user_bin}:"* ]]
 }
@@ -70,7 +92,7 @@ check_user_bin_in_path() {
 #   - 安装流程入口: `scripts/install.sh`
 print_path_hint() {
   local user_base user_bin
-  user_base="$("${PYTHON_BIN}" -m site --user-base)"
+  user_base="$("${PYTHON_BIN}" -m site --user-base 2>/dev/null || echo "$HOME/.local")"
   user_bin="${user_base}/bin"
 
   if check_user_bin_in_path; then
@@ -97,7 +119,20 @@ install_aupt() {
   mapfile -t install_args < <(build_install_args)
 
   cd "${PROJECT_ROOT}"
-  "${PYTHON_BIN}" -m pip install "${install_args[@]}" --break-system-packages
+  
+  # 尝试正常安装
+  if "${PYTHON_BIN}" -m pip install "${install_args[@]}" 2>&1 | tee /tmp/aupt_install.log; then
+    return 0
+  fi
+  
+  # 检查是否需要 --break-system-packages (Python 3.11+ on Debian/Ubuntu)
+  if grep -q "externally-managed-environment" /tmp/aupt_install.log 2>/dev/null; then
+    echo "检测到外部管理的环境，添加 --break-system-packages 选项..."
+    "${PYTHON_BIN}" -m pip install "${install_args[@]}" --break-system-packages
+    return $?
+  fi
+  
+  return 1
 }
 
 # 函数说明:

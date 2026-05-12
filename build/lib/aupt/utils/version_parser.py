@@ -8,7 +8,7 @@ import re
 _VERSION_PATTERN = re.compile(r"^(?P<name>[A-Za-z0-9._+-]+?)(?:(?P<op>==|>=|<=|>|<|@)(?P<version>.+))?$")
 
 
-@dataclass(slots=True)
+@dataclass
 class ParsedPackageSpec:
     """Represent a user package specification.
 

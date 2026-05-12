@@ -10,7 +10,7 @@ import shutil
 from aupt.utils.subprocess_wrapper import CommandResult, run_command
 
 
-@dataclass(slots=True)
+@dataclass
 class BackendCommand:
     """Represent a prepared backend command.
 

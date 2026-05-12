@@ -13,7 +13,7 @@ from aupt.utils.mirror_speed_test import benchmark_mirrors
 from aupt.utils.subprocess_wrapper import CommandResult
 
 
-@dataclass(slots=True)
+@dataclass
 class MirrorRecord:
     """Represent a mirror candidate.
 

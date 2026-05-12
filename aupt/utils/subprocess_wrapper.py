@@ -7,7 +7,7 @@ import subprocess
 from typing import Sequence
 
 
-@dataclass(slots=True)
+@dataclass
 class CommandResult:
     """Wrap subprocess execution output.
 

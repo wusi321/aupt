@@ -240,11 +240,19 @@ aupt benchmark
 ```
 
 
+## 系统要求
+
+- **Python**: 3.6+ (支持 Python 3.6, 3.7, 3.8, 3.9, 3.10, 3.11+)
+- **系统**: Linux (Ubuntu 18.04+, Debian 9+, CentOS 7+, Fedora, Arch Linux 等)
+- **权限**: 部分功能需要 root 权限（如安装包、切换镜像）
+
+详细的版本兼容性说明请查看 [COMPATIBILITY.md](COMPATIBILITY.md)。
+
 ## 安装
 
-### 方式一：使用安装脚本
+### 方式一：使用安装脚本（推荐）
 
-默认执行用户级安装，使用系统 `python3`：
+默认执行用户级安装，使用系统 `python3`，**支持 Python 3.6+**：
 
 ```bash
 # 获取仓库
@@ -255,6 +263,11 @@ chmod +x scripts/install.sh scripts/uninstall.sh
 ./scripts/install.sh
 ```
 
+安装脚本会自动：
+- 检测 Python 版本（需要 3.6+）
+- 处理 `--break-system-packages` 问题
+- 配置 PATH 环境变量
+
 安装完成后，命令会通过 `console_script` 暴露为全局可执行命令：
 
 ```bash
@@ -262,7 +275,23 @@ aupt doctor
 aupt install vim --dry-run
 ```
 
-### 方式二：直接使用 `pip`
+### 方式二：使用兼容性安装脚本（增强版）
+
+提供更多诊断信息和自动修复功能，**特别适合低版本系统**（如 Ubuntu 18.04）：
+
+```bash
+cd ~/aupt
+chmod +x scripts/install_compat.sh
+./scripts/install_compat.sh
+```
+
+**特点**:
+- 自动查找可用的 Python 解释器（python3.6, python3.7, python3.8 等）
+- 自动安装 pip（如果缺失）
+- 彩色输出和详细的诊断信息
+- 自动处理各种安装问题
+
+### 方式三：直接使用 `pip`
 
 仍然使用系统 `python3`：
 
@@ -273,6 +302,36 @@ git clone git@github.com:wusi321/aupt.git
 cd ~/aupt
 python3 -m pip install --user .
 ```
+
+### 指定 Python 版本
+
+如果系统有多个 Python 版本，可以指定使用哪个：
+
+```bash
+# 使用 Python 3.8
+PYTHON_BIN=python3.8 ./scripts/install.sh
+
+# 使用 Python 3.6
+PYTHON_BIN=python3.6 ./scripts/install.sh
+```
+
+### 低版本系统安装
+
+**Ubuntu 18.04 (Python 3.6)**:
+```bash
+sudo apt install python3-pip
+./scripts/install.sh
+```
+
+**Ubuntu 16.04 (需要升级 Python)**:
+```bash
+sudo add-apt-repository ppa:deadsnakes/ppa
+sudo apt update
+sudo apt install python3.6 python3.6-pip
+PYTHON_BIN=python3.6 ./scripts/install.sh
+```
+
+更多低版本系统安装指南请查看 [COMPATIBILITY.md](COMPATIBILITY.md)。
 
 ### 如果安装失败请尝试
 ```bash
