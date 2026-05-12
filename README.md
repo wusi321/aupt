@@ -206,6 +206,25 @@ aupt
 ├── plugins/
 │
 └── main.py
+
+## 说明文档
+aupt/
+├── README.md                      # 主文档（已更新）
+├── QUICK_START.md                 # 快速开始（新增）
+├── COMPATIBILITY.md               # 兼容性详细说明（新增）
+├── COMPATIBILITY_SUMMARY.md       # 兼容性总结（新增）
+├── PYTHON_COMPAT_REPORT.md        # 改进报告（新增）
+├── CHANGELOG.md                   # 更新日志（已更新）
+├── QUICK_REFERENCE.md             # 快速参考
+├── RESTRICTED_ENV.md              # 受限环境指南
+├── BUGFIX.md                      # Bug 修复说明
+└── scripts/
+    ├── install.sh                 # 标准安装（已增强）
+    ├── install_compat.sh          # 兼容性安装（新增）
+    ├── test_compatibility.sh      # 兼容性测试（新增）
+    ├── uninstall.sh               # 卸载脚本
+    └── manual_mirror_switch.sh    # 手动镜像切换
+
 ```
 
 ---
