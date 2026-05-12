@@ -56,10 +56,10 @@ AUPT--一个统一的 Linux 包管理调度工具(开发中)
 
 ### 支持的操作系统：
 - Debian/Ubuntu -- 已适配
-- Arch Linux
-- Fedora
-- OpenSUSE
-- SUSE Linux Enterprise Server
+- Arch Linux --理论已支持，未测试
+- Fedora  --理论已支持，未测试
+- OpenSUSE  --理论已支持，未测试
+- SUSE Linux Enterprise Server  --理论已支持，未测试
 示例：
 
 ```bash
