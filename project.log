@@ -8,3 +8,5 @@
 [2026-04-27 01:20:00] 完善 `git.sh` 一键提交脚本：支持自动定位项目根目录、自动初始化 Git、自动创建或更新 `origin`、无变更跳过提交、自定义提交信息，以及可选 `--force` 强制推送。
 [2026-04-27 01:35:00] 修复 `aupt mirror auto` 在非 root 环境下写 `/etc/apt/` 时抛出 `PermissionError` traceback 的问题：在 `mirror_manager.py` 新增 `_write_mirror_config()` 统一处理权限并给出友好提示，在 `dispatcher.py` 的 `_handle_mirror()` 加 `try-except` 兜底。
 [2026-04-27 02:00:00] 新增交互式镜像选择功能：创建 `aupt/utils/mirror_selector.py` 实现带超时的镜像菜单，集成到 `dispatcher.py` 每次 `install` 命令前自动触发，集成到 `scripts/install.sh` 每次安装 AUPT 前自动触发 pip 镜像选择，默认超时 15s 自动选最佳镜像。
+[2026-04-27 02:30:00] 修复 `scripts/install.sh` 交互菜单中 stdout/stderr 混用导致 `$()` 捕获到提示文本产生语法错误的问题：将 `read_pip_choice`、`select_pip_mirror`、`pip_mirror_auto` 的提示信息全部重定向到 stderr，stdout 仅保留纯返回值。
+[2026-04-27 02:45:00] 修复 `pip_mirror_auto()` 对部分镜像源（aliyun/ustc）测速卡住的问题：curl 增加 `--max-time 5` 限制整个请求超时，awk 比较改用 `LC_ALL=C -v` 传参避免 locale 解析异常。
