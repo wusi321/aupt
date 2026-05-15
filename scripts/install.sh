@@ -4,6 +4,135 @@ set -euo pipefail
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PYTHON_BIN="${PYTHON_BIN:-python3}"
 INSTALL_SCOPE="${INSTALL_SCOPE:-user}"
+MIRROR_TIMEOUT="${MIRROR_TIMEOUT:-15}"
+
+# pip 镜像源列表
+PIP_MIRRORS=(
+  "official|https://pypi.org/simple"
+  "tuna|https://pypi.tuna.tsinghua.edu.cn/simple"
+  "aliyun|https://mirrors.aliyun.com/pypi/simple"
+  "ustc|https://pypi.mirrors.ustc.edu.cn/simple"
+)
+
+# 函数说明:
+# 输入参数:
+#   无，使用全局变量 `PIP_MIRRORS`、`MIRROR_TIMEOUT`
+# 输出参数:
+#   标准输出打印选中的 pip 索引地址；用户取消则输出空字符串
+# 作用:
+#   显示 pip 镜像源交互菜单，超时自动选择 [1] 测速最优；返回选中的镜像 URL
+# 出处:
+#   - 安装流程入口: `scripts/install.sh`
+select_pip_mirror() {
+  echo ""
+  echo "===================================================="
+  echo "  pip 镜像源选择"
+  echo "===================================================="
+  echo "  [1] 自动测速并选择最佳镜像源 (推荐，${MIRROR_TIMEOUT}s 后自动执行)"
+  local idx=2
+  for entry in "${PIP_MIRRORS[@]}"; do
+    local name="${entry%%|*}"
+    local url="${entry##*|}"
+    printf "  [%d] %-12s %s\n" "$idx" "$name" "$url"
+    ((idx++))
+  done
+  local cancel_idx=$idx
+  echo "  [${cancel_idx}] 跳过，不修改 pip 源"
+  echo "===================================================="
+
+  local choice
+  choice=$(read_pip_choice "$((idx - 1))")
+  if [[ -z "$choice" || "$choice" == "0" ]]; then
+    echo ""
+    return 0
+  fi
+  if [[ "$choice" == "1" ]]; then
+    echo ""
+    echo "正在测速 pip 镜像源..."
+    pip_mirror_auto
+    return 0
+  fi
+  local mirror_idx=$((choice - 2))
+  local selected_url="${PIP_MIRRORS[$mirror_idx]##*|}"
+  echo ""
+  echo "已选择 pip 镜像: ${PIP_MIRRORS[$mirror_idx]%%|*}"
+  printf '%s' "$selected_url"
+}
+
+# 函数说明:
+# 输入参数:
+#   无，使用全局变量 `PIP_MIRRORS`、`PYTHON_BIN`
+# 输出参数:
+#   标准输出打印最快镜像 URL
+# 作用:
+#   对 pip 镜像列表依次测速，选择最快的
+# 出处:
+#   - 由 `select_pip_mirror()` 调用
+pip_mirror_auto() {
+  local best_name="" best_url="" best_time=999999
+  for entry in "${PIP_MIRRORS[@]}"; do
+    local name="${entry%%|*}"
+    local url="${entry##*|}"
+    if command -v curl >/dev/null 2>&1; then
+      local elapsed
+      elapsed=$(curl -s -o /dev/null -w '%{time_total}' --connect-timeout 3 "$url" 2>/dev/null || echo "999")
+      echo "  ${name}: ${elapsed}s"
+      if awk "BEGIN {exit !($elapsed < $best_time)}" 2>/dev/null; then
+        best_time=$elapsed
+        best_name=$name
+        best_url=$url
+      fi
+    fi
+  done
+  if [[ -n "$best_url" ]]; then
+    echo "已选择最快镜像: ${best_name} (${best_time}s)"
+    printf '%s' "$best_url"
+  fi
+}
+
+# 函数说明:
+# 输入参数:
+#   mirror_count: 镜像条目数
+# 输出参数:
+#   标准输出打印用户选项编号
+# 作用:
+#   读取用户按键，超时返回 1(自动测速)
+# 出处:
+#   - 由 `select_pip_mirror()` 调用
+read_pip_choice() {
+  local mirror_count=$1
+  local cancel_idx=$((mirror_count + 1))
+  printf "请输入选项 [1-%d]，%ds 内无输入自动执行 [1]: " "$cancel_idx" "$MIRROR_TIMEOUT"
+
+  if [[ ! -t 0 ]]; then
+    echo ""
+    echo "非交互终端，自动执行 [1] 自动测速并选择最佳镜像源"
+    echo "1"
+    return
+  fi
+
+  read -r -t "$MIRROR_TIMEOUT" choice 2>/dev/null || true
+  if [[ -z "$choice" ]]; then
+    echo ""
+    echo "超时，自动执行 [1] 自动测速并选择最佳镜像源"
+    echo "1"
+    return
+  fi
+
+  if [[ "$choice" == "$cancel_idx" ]]; then
+    echo "已取消，跳过 pip 镜像源修改。"
+    echo "0"
+    return
+  fi
+
+  if [[ "$choice" =~ ^[0-9]+$ ]] && (( choice >= 1 && choice <= mirror_count )); then
+    echo "$choice"
+    return
+  fi
+
+  echo "无效选项 ${choice}，自动执行 [1]"
+  echo "1"
+}
 
 # 函数说明:
 # 输入参数:
@@ -119,6 +248,16 @@ install_aupt() {
   mapfile -t install_args < <(build_install_args)
 
   cd "${PROJECT_ROOT}"
+
+  # pip 镜像源选择交互
+  local pip_index_url
+  pip_index_url=$(select_pip_mirror)
+  if [[ -n "$pip_index_url" ]]; then
+    install_args+=("--index-url" "$pip_index_url")
+  fi
+  
+  echo ""
+  echo "正在安装 AUPT ..."
   
   # 尝试正常安装
   if "${PYTHON_BIN}" -m pip install "${install_args[@]}" 2>&1 | tee /tmp/aupt_install.log; then

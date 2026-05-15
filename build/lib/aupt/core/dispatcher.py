@@ -5,6 +5,7 @@ from __future__ import annotations
 from argparse import Namespace
 import json
 from pathlib import Path
+import sys
 import time
 
 from aupt.backends import AptBackend, DnfBackend, FlatpakBackend, PacmanBackend, SnapBackend, ZypperBackend
@@ -12,6 +13,7 @@ from aupt.core.config_manager import ConfigManager
 from aupt.core.distro_detector import DistroDetector
 from aupt.core.mirror_manager import MirrorManager
 from aupt.core.package_resolver import PackageResolver
+from aupt.utils.mirror_selector import apply_mirror_selection
 from aupt.utils.subprocess_wrapper import CommandResult
 from aupt.utils.version_parser import parse_package_spec
 
@@ -96,6 +98,17 @@ class Dispatcher:
         chain = self._resolve_backend_chain(args.explicit_manager)
         if not chain:
             return CommandResult([args.action], 1, "", "未找到可用包管理器")
+
+        primary_manager = chain[0]
+
+        if args.action == "install" and primary_manager in ("apt", "pacman", "dnf", "zypper"):
+            _mirror_result = apply_mirror_selection(
+                self.mirror_manager,
+                manager=primary_manager,
+                dry_run=args.dry_run,
+            )
+            if _mirror_result.stderr.strip():
+                print(_mirror_result.stderr.strip(), file=sys.stderr)
 
         package_spec = getattr(args, "package", None)
         version = None

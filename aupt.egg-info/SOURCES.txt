@@ -31,6 +31,7 @@ aupt/database/package_alias.json
 aupt/plugins/__init__.py
 aupt/utils/__init__.py
 aupt/utils/logger.py
+aupt/utils/mirror_selector.py
 aupt/utils/mirror_speed_test.py
 aupt/utils/subprocess_wrapper.py
 aupt/utils/version_parser.py
