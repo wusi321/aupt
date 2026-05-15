@@ -6,3 +6,4 @@
 [2026-04-27 01:02:00] 修复 `aupt/utils/logger.py` 在只读文件系统上初始化日志文件失败的问题，改为文件日志不可写时自动回退为仅控制台输出，保障全局命令可执行。
 [2026-04-27 01:10:00] 优化 `aupt/backends/apt_backend.py`：将脚本型操作切换为 `apt-get`，查询类命令切换为 `apt-cache`，减少 `apt` CLI 稳定性警告；同步更新 `README.md` 中的 APT 后端说明。
 [2026-04-27 01:20:00] 完善 `git.sh` 一键提交脚本：支持自动定位项目根目录、自动初始化 Git、自动创建或更新 `origin`、无变更跳过提交、自定义提交信息，以及可选 `--force` 强制推送。
+[2026-04-27 01:35:00] 修复 `aupt mirror auto` 在非 root 环境下写 `/etc/apt/` 时抛出 `PermissionError` traceback 的问题：在 `mirror_manager.py` 新增 `_write_mirror_config()` 统一处理权限并给出友好提示，在 `dispatcher.py` 的 `_handle_mirror()` 加 `try-except` 兜底。

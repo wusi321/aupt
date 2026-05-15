@@ -213,19 +213,22 @@ class Dispatcher:
             - Mirror manager: `aupt/core/mirror_manager.py`
         """
 
-        config = self.config_manager.load()
-        timeout = float(config.get("mirror", {}).get("timeout", 3.0))
-        if args.mirror_action == "list":
-            mirrors = self.mirror_manager.list_mirrors(args.explicit_manager)
-            output = "\n".join(f"{item.name}\t{item.url}" for item in mirrors) or "没有可用镜像"
-            return CommandResult(["mirror", "list"], 0, output, "")
-        if args.mirror_action == "auto":
-            return self.mirror_manager.auto_switch(args.explicit_manager, dry_run=args.dry_run, timeout=timeout)
-        if args.mirror_action == "switch":
-            if not args.mirror_name:
-                return CommandResult(["mirror", "switch"], 1, "", "mirror switch 需要指定镜像名称")
-            return self.mirror_manager.switch_mirror(args.mirror_name, manager=args.explicit_manager, dry_run=args.dry_run)
-        return CommandResult(["mirror"], 1, "", "未知镜像动作")
+        try:
+            config = self.config_manager.load()
+            timeout = float(config.get("mirror", {}).get("timeout", 3.0))
+            if args.mirror_action == "list":
+                mirrors = self.mirror_manager.list_mirrors(args.explicit_manager)
+                output = "\n".join(f"{item.name}\t{item.url}" for item in mirrors) or "没有可用镜像"
+                return CommandResult(["mirror", "list"], 0, output, "")
+            if args.mirror_action == "auto":
+                return self.mirror_manager.auto_switch(args.explicit_manager, dry_run=args.dry_run, timeout=timeout)
+            if args.mirror_action == "switch":
+                if not args.mirror_name:
+                    return CommandResult(["mirror", "switch"], 1, "", "mirror switch 需要指定镜像名称")
+                return self.mirror_manager.switch_mirror(args.mirror_name, manager=args.explicit_manager, dry_run=args.dry_run)
+            return CommandResult(["mirror"], 1, "", "未知镜像动作")
+        except Exception as exc:
+            return CommandResult(["mirror"], 1, "", f"镜像操作失败: {exc}")
 
     def _handle_doctor(self) -> CommandResult:
         """Run environment diagnostics.

@@ -214,28 +214,21 @@ class MirrorManager:
         
         backup_path = path.with_suffix(path.suffix + ".aupt.bak")
         
-        # Check if we have write permission
         try:
-            # Try direct write first (if running as root or file is writable)
             backup_path.write_text(original, encoding='utf-8')
             path.write_text(updated, encoding='utf-8')
             return CommandResult(["mirror", "switch"], 0, f"已更新: {path}", "")
-        except PermissionError:
-            # Need elevated privileges
-            if os.geteuid() != 0:
-                # Not running as root, provide helpful error message
-                error_msg = (
-                    f"权限不足，无法修改系统文件: {path}\n\n"
-                    f"请使用以下方式之一:\n"
-                    f"1. 使用 root 用户运行:\n"
-                    f"   sudo -i\n"
-                    f"   aupt mirror auto\n\n"
-                    f"2. 或者先查看要修改的内容 (dry-run):\n"
-                    f"   aupt mirror auto --dry-run\n"
-                    f"   然后手动编辑配置文件\n\n"
-                    f"3. 如果在容器环境中，可能需要调整容器配置"
-                )
-                return CommandResult(["mirror", "switch"], 1, "", error_msg)
-            else:
-                # Running as root but still failed
-                return CommandResult(["mirror", "switch"], 1, "", f"写入文件失败: {path}")
+        except OSError as exc:
+            hint = (
+                f"无法修改系统文件: {path}\n"
+                f"错误: {exc}\n\n"
+                f"请使用以下方式之一:\n"
+                f"1. 使用 root 用户运行:\n"
+                f"   sudo -i\n"
+                f"   aupt mirror auto\n\n"
+                f"2. 先预览要修改的内容:\n"
+                f"   aupt mirror auto --dry-run\n"
+                f"   然后手动编辑配置文件\n\n"
+                f"3. 如果是容器/只读环境，请调整挂载权限"
+            )
+            return CommandResult(["mirror", "switch"], 1, "", hint)
