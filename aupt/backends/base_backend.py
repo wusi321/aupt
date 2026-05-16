@@ -50,12 +50,13 @@ class BaseBackend(ABC):
 
         return bool(self.executable and shutil.which(self.executable))
 
-    def execute(self, command: BackendCommand, dry_run: bool = False) -> CommandResult:
+    def execute(self, command: BackendCommand, dry_run: bool = False, stream: bool = False) -> CommandResult:
         """Execute a prepared backend command.
 
         Args:
             command: Prepared backend command object.
             dry_run: Whether to only print the command without executing it.
+            stream: When True, output flows to terminal in real-time (for long commands).
 
         Returns:
             CommandResult: Process execution result.
@@ -67,7 +68,7 @@ class BaseBackend(ABC):
         argv = list(command.argv)
         if command.requires_root and shutil.which("sudo"):
             argv = ["sudo", *argv]
-        return run_command(argv, dry_run=dry_run)
+        return run_command(argv, dry_run=dry_run, stream=stream)
 
     def install(self, package: str, version: str | None = None, dry_run: bool = False) -> CommandResult:
         """Install a package through the backend.
@@ -84,7 +85,7 @@ class BaseBackend(ABC):
             - Builder hook: `build_install_command()` in current class.
         """
 
-        return self.execute(self.build_install_command(package, version), dry_run=dry_run)
+        return self.execute(self.build_install_command(package, version), dry_run=dry_run, stream=not dry_run)
 
     def remove(self, package: str, dry_run: bool = False) -> CommandResult:
         """Remove a package through the backend.
@@ -100,7 +101,7 @@ class BaseBackend(ABC):
             - Builder hook: `build_remove_command()` in current class.
         """
 
-        return self.execute(self.build_remove_command(package), dry_run=dry_run)
+        return self.execute(self.build_remove_command(package), dry_run=dry_run, stream=not dry_run)
 
     def update(self, dry_run: bool = False) -> CommandResult:
         """Refresh package index through the backend.
@@ -115,7 +116,7 @@ class BaseBackend(ABC):
             - Builder hook: `build_update_command()` in current class.
         """
 
-        return self.execute(self.build_update_command(), dry_run=dry_run)
+        return self.execute(self.build_update_command(), dry_run=dry_run, stream=not dry_run)
 
     def upgrade(self, dry_run: bool = False) -> CommandResult:
         """Upgrade installed packages through the backend.
@@ -130,7 +131,7 @@ class BaseBackend(ABC):
             - Builder hook: `build_upgrade_command()` in current class.
         """
 
-        return self.execute(self.build_upgrade_command(), dry_run=dry_run)
+        return self.execute(self.build_upgrade_command(), dry_run=dry_run, stream=not dry_run)
 
     def search(self, keyword: str, dry_run: bool = False) -> CommandResult:
         """Search packages through the backend.
@@ -177,7 +178,7 @@ class BaseBackend(ABC):
             - Builder hook: `build_clean_command()` in current class.
         """
 
-        return self.execute(self.build_clean_command(), dry_run=dry_run)
+        return self.execute(self.build_clean_command(), dry_run=dry_run, stream=not dry_run)
 
     @abstractmethod
     def build_install_command(self, package: str, version: str | None = None) -> BackendCommand:

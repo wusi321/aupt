@@ -12,3 +12,4 @@
 [2026-04-27 02:45:00] 修复 `pip_mirror_auto()` 对部分镜像源（aliyun/ustc）测速卡住的问题：curl 增加 `--max-time 5` 限制整个请求超时，awk 比较改用 `LC_ALL=C -v` 传参避免 locale 解析异常。
 [2026-04-27 03:00:00] 同步 `install_compat.sh` 低版本安装脚本：新增 `MIRROR_TIMEOUT`/`PIP_MIRRORS` 全局变量、`select_pip_mirror`/`pip_mirror_auto`/`read_pip_choice` 三个交互函数，`install_aupt()` 中注入 pip 镜像选择，stdout/stderr 分离与 `install.sh` 保持一致。
 [2026-04-27 03:15:00] 修复三个 CLI 问题：(1) `--version`/`-V`/`--help`/`-h` 不再报"不支持的 action"；(2) `Ctrl+C` 打断 `update`/`upgrade` 等长命令时不再泄露 Python traceback，在 `subprocess_wrapper.run_command()` 和 `commands.main()` 两层捕获 `KeyboardInterrupt`。
+[2026-04-27 03:30:00] 修复 `update`/`upgrade`/`install`/`remove`/`clean` 命令运行时看不到任何进度输出的问题：`subprocess_wrapper.run_command()` 新增 `stream` 参数，`capture_output=False` 时输出直接流向终端；`base_backend.execute()` 透传 `stream`；五个长时方法设置 `stream=not dry_run`。

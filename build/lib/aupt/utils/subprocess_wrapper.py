@@ -30,13 +30,15 @@ class CommandResult:
     stderr: str
 
 
-def run_command(argv: Sequence[str], dry_run: bool = False, timeout: int = 600) -> CommandResult:
+def run_command(argv: Sequence[str], dry_run: bool = False, timeout: int = 600, stream: bool = False) -> CommandResult:
     """Run a subprocess command safely without shell interpolation.
 
     Args:
         argv: Process argument vector.
         dry_run: Whether to skip real execution.
         timeout: Execution timeout in seconds.
+        stream: When True, stdout/stderr flow to terminal in real-time instead of being captured.
+                Suitable for long-running commands (update/upgrade/install/remove).
 
     Returns:
         CommandResult: Process execution result.
@@ -51,12 +53,12 @@ def run_command(argv: Sequence[str], dry_run: bool = False, timeout: int = 600) 
     try:
         completed = subprocess.run(
             command,
-            capture_output=True,
+            capture_output=not stream,
             text=True,
             check=False,
             timeout=timeout,
         )
-        return CommandResult(command, completed.returncode, completed.stdout, completed.stderr)
+        return CommandResult(command, completed.returncode, completed.stdout or "", completed.stderr or "")
     except KeyboardInterrupt:
         return CommandResult(command, 130, "", "用户取消了操作 (Ctrl+C)")
     except FileNotFoundError as exc:
