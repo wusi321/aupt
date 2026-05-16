@@ -85,11 +85,15 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     import sys
 
-    args = parse_cli_args(list(argv) if argv is not None else sys.argv[1:])
-    project_root = Path(__file__).resolve().parents[2]
-    logger = get_logger()
-    dispatcher = build_dispatcher(project_root)
-    logger.debug("开始处理命令: %s", args)
-    result = dispatcher.handle(args)
-    print(format_result(result))
-    return result.returncode
+    try:
+        args = parse_cli_args(list(argv) if argv is not None else sys.argv[1:])
+        project_root = Path(__file__).resolve().parents[2]
+        logger = get_logger()
+        dispatcher = build_dispatcher(project_root)
+        logger.debug("开始处理命令: %s", args)
+        result = dispatcher.handle(args)
+        print(format_result(result))
+        return result.returncode
+    except KeyboardInterrupt:
+        print("\n操作已取消。", file=sys.stderr)
+        return 130

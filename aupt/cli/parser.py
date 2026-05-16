@@ -75,6 +75,19 @@ def parse_cli_args(argv: Sequence[str]) -> argparse.Namespace:
     if not argv:
         raise SystemExit("用法: aupt <manager?> <action> [args] [--dry-run]")
 
+    if argv[0] in ("--version", "-V", "-v"):
+        from aupt import __version__
+        print(f"aupt {__version__}")
+        raise SystemExit(0)
+
+    if argv[0] in ("--help", "-h"):
+        from argparse import ArgumentParser
+        p = ArgumentParser(prog="aupt", description="Advanced Unified Package Tool")
+        p.add_argument("--version", "-V", action="store_true")
+        p.add_argument("action", nargs="?", choices=SUPPORTED_ACTIONS)
+        p.print_help()
+        raise SystemExit(0)
+
     explicit_manager = None
     tokens = list(argv)
     if tokens[0] in SUPPORTED_MANAGERS:

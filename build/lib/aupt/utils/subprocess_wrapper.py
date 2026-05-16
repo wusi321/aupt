@@ -57,6 +57,8 @@ def run_command(argv: Sequence[str], dry_run: bool = False, timeout: int = 600) 
             timeout=timeout,
         )
         return CommandResult(command, completed.returncode, completed.stdout, completed.stderr)
+    except KeyboardInterrupt:
+        return CommandResult(command, 130, "", "用户取消了操作 (Ctrl+C)")
     except FileNotFoundError as exc:
         return CommandResult(command, 127, "", str(exc))
     except subprocess.TimeoutExpired as exc:
