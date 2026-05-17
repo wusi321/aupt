@@ -24,6 +24,7 @@ AUPT--一个统一的 Linux 包管理调度工具(开发中)
   - [1.5 镜像源自动优化](#15-镜像源自动优化)
   - [1.6 包搜索与信息查询](#16-包搜索与信息查询)
   - [1.7 系统诊断功能](#37-系统诊断功能)
+  - [兼容性测试截图](#兼容性测试截图)
 - [2. 系统总体架构](#2-系统总体架构system-architecture)
 - [3. CLI 设计规范](#3-cli-设计规范command-interface)
 - [安装](#安装)
@@ -65,11 +66,21 @@ AUPT--一个统一的 Linux 包管理调度工具(开发中)
 - 支持统一更新命令
 
 ### 支持的操作系统：
-- Debian/Ubuntu -- 已适配
-- Arch Linux --理论已支持，未测试
-- Fedora  --理论已支持，未测试
-- OpenSUSE  --理论已支持，未测试
-- SUSE Linux Enterprise Server  --理论已支持，未测试
+- Debian/Ubuntu -- 已适配 ✅
+- CentOS/RHEL -- 已适配 ✅
+- Arch Linux -- 理论已支持，待测试
+- Fedora -- 理论已支持，待测试
+- OpenSUSE -- 理论已支持，待测试
+
+#### 兼容性测试截图
+
+| Ubuntu 22.04 | CentOS 8.9 |
+|---|---|
+| ![Ubuntu测试](img/ubuntu.png) | ![CentOS测试](img/centos1.png) |
+| python3.10 | python3.12 |
+
+> 更多系统兼容性测试截图持续补充中，测试完成后将在此处展示。
+
 示例：
 
 ```bash
