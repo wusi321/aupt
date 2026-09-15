@@ -1,0 +1,2 @@
+*.sh text eol=lf
+git.sh text eol=lf
