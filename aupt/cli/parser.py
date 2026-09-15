@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """CLI argument parsing utilities."""
 
 import argparse

@@ -1,9 +1,8 @@
-from __future__ import annotations
-
 """Package alias resolution service."""
 
 import json
 from pathlib import Path
+from typing import Dict
 
 
 class PackageResolver:
@@ -25,7 +24,7 @@ class PackageResolver:
         self.alias_path = alias_path
         self.aliases = self._load_aliases()
 
-    def _load_aliases(self) -> dict[str, dict[str, str]]:
+    def _load_aliases(self) -> Dict[str, Dict[str, str]]:
         """Load alias mapping from disk.
 
         Args:

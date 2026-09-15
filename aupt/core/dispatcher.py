@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """Central command dispatcher."""
 
 from argparse import Namespace
@@ -7,6 +5,7 @@ import json
 from pathlib import Path
 import sys
 import time
+from typing import List, Optional
 
 from aupt.backends import AptBackend, DnfBackend, FlatpakBackend, PacmanBackend, SnapBackend, ZypperBackend
 from aupt.core.config_manager import ConfigManager
@@ -119,7 +118,7 @@ class Dispatcher:
             version = parsed.version
 
         keyword = getattr(args, "keyword", None)
-        failures: list[str] = []
+        failures: List[str] = []
         for manager in chain:
             backend = self.backends[manager]
             try:
@@ -131,7 +130,7 @@ class Dispatcher:
             except Exception as exc:
                 failures.append(f"{manager}: {exc}")
                 continue
-            if result.returncode == 0 or args.explicit_manager or args.action in {"update", "upgrade", "clean"}:
+            if result.returncode == 0:
                 return result
             failures.append(f"{manager}: {result.stderr.strip() or result.stdout.strip() or '失败'}")
         return CommandResult([args.action], 1, "", "\n".join(failures))
@@ -140,9 +139,9 @@ class Dispatcher:
         self,
         backend: object,
         action: str,
-        package: str | None,
-        version: str | None,
-        keyword: str | None,
+        package: Optional[str],
+        version: Optional[str],
+        keyword: Optional[str],
         dry_run: bool,
     ) -> CommandResult:
         """Call a concrete backend method.
@@ -178,7 +177,7 @@ class Dispatcher:
             return backend.clean(dry_run=dry_run)
         raise ValueError(f"不支持的后端动作: {action}")
 
-    def _resolve_backend_chain(self, explicit_manager: str | None) -> list[str]:
+    def _resolve_backend_chain(self, explicit_manager: Optional[str]) -> List[str]:
         """Determine backend priority chain.
 
         Args:
@@ -207,7 +206,7 @@ class Dispatcher:
         preferred.extend(config.get("priority", []))
         preferred.extend(["flatpak", "snap"])
 
-        deduped: list[str] = []
+        deduped: List[str] = []
         for manager in preferred:
             if manager not in deduped and manager in self.backends and self.backends[manager].is_available():
                 deduped.append(manager)
@@ -311,7 +310,7 @@ class Dispatcher:
         """
 
         runs = max(1, args.runs)
-        samples: list[float] = []
+        samples: List[float] = []
         for _ in range(runs):
             start = time.perf_counter()
             self.distro_detector.detect()

@@ -248,11 +248,21 @@ install_pip() {
     print_info "下载 get-pip.py..."
     local temp_dir
     temp_dir=$(mktemp -d)
+    local python_version pip_url
+    python_version=$(get_python_version "$python_bin")
+    case "$python_version" in
+        3.6|3.7|3.8)
+            pip_url="https://bootstrap.pypa.io/pip/${python_version}/get-pip.py"
+            ;;
+        *)
+            pip_url="https://bootstrap.pypa.io/get-pip.py"
+            ;;
+    esac
     
     if command -v curl >/dev/null 2>&1; then
-        curl -fsSL https://bootstrap.pypa.io/pip/get-pip.py -o "$temp_dir/get-pip.py"
+        curl -fsSL "$pip_url" -o "$temp_dir/get-pip.py"
     elif command -v wget >/dev/null 2>&1; then
-        wget -q https://bootstrap.pypa.io/pip/get-pip.py -O "$temp_dir/get-pip.py"
+        wget -q "$pip_url" -O "$temp_dir/get-pip.py"
     else
         print_error "需要 curl 或 wget 来下载 get-pip.py"
         rm -rf "$temp_dir"

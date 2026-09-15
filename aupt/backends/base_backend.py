@@ -1,10 +1,8 @@
-from __future__ import annotations
-
 """Abstract backend interface and shared command execution helpers."""
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Iterable, Sequence
+from typing import List, Optional
 import shutil
 
 from aupt.utils.subprocess_wrapper import CommandResult, run_command
@@ -25,7 +23,7 @@ class BackendCommand:
         - Command execution: `aupt/utils/subprocess_wrapper.py`
     """
 
-    argv: list[str]
+    argv: List[str]
     requires_root: bool = False
 
 
@@ -70,7 +68,7 @@ class BaseBackend(ABC):
             argv = ["sudo", *argv]
         return run_command(argv, dry_run=dry_run, stream=stream)
 
-    def install(self, package: str, version: str | None = None, dry_run: bool = False) -> CommandResult:
+    def install(self, package: str, version: Optional[str] = None, dry_run: bool = False) -> CommandResult:
         """Install a package through the backend.
 
         Args:
@@ -181,7 +179,7 @@ class BaseBackend(ABC):
         return self.execute(self.build_clean_command(), dry_run=dry_run, stream=not dry_run)
 
     @abstractmethod
-    def build_install_command(self, package: str, version: str | None = None) -> BackendCommand:
+    def build_install_command(self, package: str, version: Optional[str] = None) -> BackendCommand:
         """Build the install command for the concrete backend.
 
         Args:

@@ -1,9 +1,8 @@
-from __future__ import annotations
-
 """Package version expression parser."""
 
 from dataclasses import dataclass
 import re
+from typing import Optional
 
 _VERSION_PATTERN = re.compile(r"^(?P<name>[A-Za-z0-9._+-]+?)(?:(?P<op>==|>=|<=|>|<|@)(?P<version>.+))?$")
 
@@ -27,8 +26,8 @@ class ParsedPackageSpec:
 
     raw: str
     name: str
-    operator: str | None
-    version: str | None
+    operator: Optional[str]
+    version: Optional[str]
 
 
 def parse_package_spec(spec: str) -> ParsedPackageSpec:

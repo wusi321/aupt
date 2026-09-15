@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """DNF backend implementation."""
+
+from typing import Optional
 
 from aupt.backends.base_backend import BackendCommand, BaseBackend
 
@@ -11,7 +11,7 @@ class DnfBackend(BaseBackend):
     name = "dnf"
     executable = "dnf"
 
-    def build_install_command(self, package: str, version: str | None = None) -> BackendCommand:
+    def build_install_command(self, package: str, version: Optional[str] = None) -> BackendCommand:
         """Build a DNF install command.
 
         Args:

@@ -1,9 +1,7 @@
-from __future__ import annotations
-
 """CLI command entrypoint and output formatting."""
 
 from pathlib import Path
-from typing import Sequence
+from typing import List, Optional, Sequence
 
 from aupt.cli.parser import parse_cli_args
 from aupt.core.config_manager import ConfigManager
@@ -28,7 +26,7 @@ def format_result(result: CommandResult) -> str:
         - Result type: `aupt/utils/subprocess_wrapper.py`
     """
 
-    chunks: list[str] = []
+    chunks: List[str] = []
     if result.stdout.strip():
         chunks.append(result.stdout.strip())
     if result.stderr.strip():
@@ -38,7 +36,7 @@ def format_result(result: CommandResult) -> str:
     return "\n".join(chunks)
 
 
-def build_dispatcher(project_root: Path | None = None) -> Dispatcher:
+def build_dispatcher(project_root: Optional[Path] = None) -> Dispatcher:
     """Construct the main dispatcher with all core services.
 
     Args:
@@ -69,7 +67,7 @@ def build_dispatcher(project_root: Path | None = None) -> Dispatcher:
     )
 
 
-def main(argv: Sequence[str] | None = None) -> int:
+def main(argv: Optional[Sequence[str]] = None) -> int:
     """Run the AUPT command-line entrypoint.
 
     Args:

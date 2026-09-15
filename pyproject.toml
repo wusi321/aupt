@@ -1,22 +1,8 @@
 [build-system]
-requires = ["setuptools>=45"]
-build-backend = "setuptools.build_meta"
-
-[project]
-name = "aupt"
-version = "0.1.0"
-description = "Advanced Unified Package Tool"
-requires-python = ">=3.6"
-readme = "README.md"
-
-[project.scripts]
-aupt = "aupt.cli.commands:main"
-
-[tool.setuptools]
-include-package-data = true
-
-[tool.setuptools.packages.find]
-include = ["aupt*"]
-
-[tool.setuptools.package-data]
-"aupt.database" = ["*.json"]
+# Python 3.6 cannot install modern setuptools. The legacy backend reads the
+# setup.py below and keeps source installs working on old distributions.
+requires = [
+  "setuptools>=45,<61; python_version < '3.7'",
+  "setuptools>=61; python_version >= '3.7'",
+]
+build-backend = "setuptools.build_meta:__legacy__"

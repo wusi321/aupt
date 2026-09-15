@@ -1,11 +1,10 @@
-from __future__ import annotations
-
 """Linux distribution detection service."""
 
 from dataclasses import dataclass
 import json
 from pathlib import Path
 import shutil
+from typing import Dict, List, Optional
 
 
 @dataclass
@@ -26,9 +25,9 @@ class DistroInfo:
     """
 
     distro_id: str
-    id_like: list[str]
+    id_like: List[str]
     name: str
-    version_codename: str | None = None
+    version_codename: Optional[str] = None
 
 
 class DistroDetector:
@@ -50,7 +49,7 @@ class DistroDetector:
         self.mapping_path = mapping_path
         self.mapping = self._load_mapping()
 
-    def _load_mapping(self) -> dict[str, str]:
+    def _load_mapping(self) -> Dict[str, str]:
         """Load distro-to-manager mapping from disk.
 
         Args:
@@ -80,14 +79,18 @@ class DistroDetector:
         """
 
         os_release = Path("/etc/os-release")
-        values: dict[str, str] = {}
+        if not os_release.exists():
+            os_release = Path("/usr/lib/os-release")
+        if not os_release.exists():
+            return DistroInfo("unknown", [], "Unknown Linux")
+        values: Dict[str, str] = {}
         with os_release.open("r", encoding="utf-8") as handle:
             for line in handle:
                 line = line.strip()
                 if not line or "=" not in line:
                     continue
                 key, value = line.split("=", 1)
-                values[key] = value.strip().strip('"')
+                values[key] = value.strip().strip('"').strip("'")
         id_like = values.get("ID_LIKE", "").split()
         return DistroInfo(
             distro_id=values.get("ID", "unknown"),
@@ -96,7 +99,7 @@ class DistroDetector:
             version_codename=values.get("VERSION_CODENAME"),
         )
 
-    def guess_manager(self, distro: DistroInfo | None = None) -> str | None:
+    def guess_manager(self, distro: Optional[DistroInfo] = None) -> Optional[str]:
         """Infer the best primary manager from distro metadata.
 
         Args:
@@ -118,7 +121,7 @@ class DistroDetector:
                 return manager
         return None
 
-    def available_managers(self) -> list[str]:
+    def available_managers(self) -> List[str]:
         """List package managers that are installed on the host.
 
         Args:

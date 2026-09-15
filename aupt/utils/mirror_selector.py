@@ -1,10 +1,8 @@
-from __future__ import annotations
-
 """Interactive mirror selection menu with timeout fallback."""
 
 import select
 import sys
-from typing import Any
+from typing import Optional
 
 from aupt.core.mirror_manager import MirrorManager, MirrorRecord
 from aupt.utils.subprocess_wrapper import CommandResult
@@ -14,9 +12,9 @@ MENU_TIMEOUT_SECONDS = 15
 
 def select_mirror_interactive(
     mirror_manager: MirrorManager,
-    manager: str | None = None,
+    manager: Optional[str] = None,
     timeout_seconds: int = MENU_TIMEOUT_SECONDS,
-) -> str | None:
+) -> Optional[str]:
     """Display an interactive mirror selection menu and return the chosen mirror name.
 
     Args:
@@ -59,7 +57,7 @@ def select_mirror_interactive(
     return None
 
 
-def _read_choice_with_timeout(mirror_count: int, timeout_seconds: int) -> int | None:
+def _read_choice_with_timeout(mirror_count: int, timeout_seconds: int) -> Optional[int]:
     """Read a single-digit menu choice with a timeout.
 
     Args:
@@ -110,7 +108,7 @@ def _read_choice_with_timeout(mirror_count: int, timeout_seconds: int) -> int | 
 
 def apply_mirror_selection(
     mirror_manager: MirrorManager,
-    manager: str | None = None,
+    manager: Optional[str] = None,
     dry_run: bool = False,
     timeout_seconds: int = MENU_TIMEOUT_SECONDS,
 ) -> CommandResult:

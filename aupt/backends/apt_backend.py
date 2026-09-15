@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """APT backend implementation."""
+
+from typing import Optional
 
 from aupt.backends.base_backend import BackendCommand, BaseBackend
 
@@ -11,7 +11,7 @@ class AptBackend(BaseBackend):
     name = "apt"
     executable = "apt-get"
 
-    def build_install_command(self, package: str, version: str | None = None) -> BackendCommand:
+    def build_install_command(self, package: str, version: Optional[str] = None) -> BackendCommand:
         """Build an APT install command.
 
         Args:

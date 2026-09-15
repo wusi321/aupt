@@ -89,12 +89,12 @@ main() {
     
     for python_bin in "${python_versions[@]}"; do
         if test_python_version "$python_bin"; then
-            ((passed++))
+            passed=$((passed + 1))
         else
             if command -v "$python_bin" >/dev/null 2>&1; then
-                ((failed++))
+                failed=$((failed + 1))
             else
-                ((skipped++))
+                skipped=$((skipped + 1))
             fi
         fi
         echo ""

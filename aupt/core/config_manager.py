@@ -1,11 +1,9 @@
-from __future__ import annotations
-
 """Configuration loading and persistence utilities."""
 
 from copy import deepcopy
 import json
 from pathlib import Path
-from typing import Any
+from typing import Any, Dict, Optional
 
 DEFAULT_CONFIG = {
     "default_manager": "auto",
@@ -18,7 +16,7 @@ DEFAULT_CONFIG = {
 class ConfigManager:
     """Manage user configuration stored in a YAML-compatible JSON file."""
 
-    def __init__(self, config_path: Path | None = None) -> None:
+    def __init__(self, config_path: Optional[Path] = None) -> None:
         """Initialize the config manager.
 
         Args:
@@ -32,6 +30,7 @@ class ConfigManager:
         """
 
         self.config_path = config_path or Path.home() / ".config" / "aupt" / "config.yaml"
+        self._memory_config = None
 
     def ensure_exists(self) -> None:
         """Create the default config file when it does not exist.
@@ -46,10 +45,16 @@ class ConfigManager:
             - Save method: `save()` in current file.
         """
 
-        if not self.config_path.exists():
+        if self._memory_config is not None or self.config_path.exists():
+            return
+        try:
             self.save(deepcopy(DEFAULT_CONFIG))
+        except OSError:
+            # Read-only containers and restricted sandboxes should still be
+            # able to run discovery, dry-run and diagnostic commands.
+            self._memory_config = deepcopy(DEFAULT_CONFIG)
 
-    def load(self) -> dict[str, Any]:
+    def load(self) -> Dict[str, Any]:
         """Load configuration from disk.
 
         Args:
@@ -63,13 +68,19 @@ class ConfigManager:
         """
 
         self.ensure_exists()
-        with self.config_path.open("r", encoding="utf-8") as handle:
-            data = json.load(handle)
+        if self._memory_config is not None:
+            data = deepcopy(self._memory_config)
+        else:
+            try:
+                with self.config_path.open("r", encoding="utf-8") as handle:
+                    data = json.load(handle)
+            except (OSError, ValueError):
+                data = {}
         merged = deepcopy(DEFAULT_CONFIG)
         self._deep_merge(merged, data)
         return merged
 
-    def save(self, config: dict[str, Any]) -> None:
+    def save(self, config: Dict[str, Any]) -> None:
         """Persist configuration to disk.
 
         Args:
@@ -82,12 +93,18 @@ class ConfigManager:
             - Config path: `self.config_path` in current class.
         """
 
-        self.config_path.parent.mkdir(parents=True, exist_ok=True)
-        with self.config_path.open("w", encoding="utf-8") as handle:
-            json.dump(config, handle, indent=2, ensure_ascii=False)
-            handle.write("\n")
+        self._memory_config = deepcopy(config)
+        try:
+            self.config_path.parent.mkdir(parents=True, exist_ok=True)
+            with self.config_path.open("w", encoding="utf-8") as handle:
+                json.dump(config, handle, indent=2, ensure_ascii=False)
+                handle.write("\n")
+        except OSError:
+            # Keep the in-memory value for this process when persistence is
+            # unavailable; callers still receive a valid configuration.
+            return
 
-    def get(self, key_path: str | None = None) -> Any:
+    def get(self, key_path: Optional[str] = None) -> Any:
         """Read a configuration value.
 
         Args:
@@ -108,7 +125,7 @@ class ConfigManager:
             current = current[key]
         return current
 
-    def set(self, key_path: str, value: Any) -> dict[str, Any]:
+    def set(self, key_path: str, value: Any) -> Dict[str, Any]:
         """Set a configuration value and save it.
 
         Args:
@@ -131,7 +148,7 @@ class ConfigManager:
         self.save(config)
         return config
 
-    def _deep_merge(self, base: dict[str, Any], new_data: dict[str, Any]) -> None:
+    def _deep_merge(self, base: Dict[str, Any], new_data: Dict[str, Any]) -> None:
         """Merge a user config into defaults recursively.
 
         Args:
